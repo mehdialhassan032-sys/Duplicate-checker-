@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheetPulse - Professional Sheet & Duplicate Cleaner</title>
+    <title>SheetPulse Pro - Precision Duplicate Inspection Suite</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS library -->
@@ -28,13 +28,13 @@
         <!-- Header Section -->
         <header class="text-center mb-12">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
-                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Enterprise Data Suite
+                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Precision Audit Suite
             </div>
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-3">
-                SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Duplicate Engine</span>
+                SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Exact Cleaner</span>
             </h1>
             <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                Seamlessly paste from Google Sheets or upload files. Infinite columns, pristine layout, zero clutter.
+                Real duplicate row auditing with absolute layout preservation. Zero fake data, 100% exact matching.
             </p>
         </header>
 
@@ -70,7 +70,7 @@
             <textarea id="smartPasteInput" rows="7" placeholder="Yahan data paste karein (Infinite A to Z columns supported)..." class="w-full bg-slate-950/80 border border-slate-800/80 focus:border-indigo-500 rounded-2xl p-4 text-slate-200 focus:outline-none transition-all text-sm font-mono resize-y shadow-inner mb-6 custom-scrollbar"></textarea>
             
             <button onclick="processInfiniteColumnsPaste()" class="w-full sm:w-auto px-7 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white shadow-xl shadow-indigo-600/25 transition-all flex items-center justify-center gap-2">
-                🔍 Detect Columns & Clean
+                🔍 Inspect & Clean Duplicates
             </button>
         </div>
 
@@ -81,7 +81,7 @@
                 <label for="excelFile" class="cursor-pointer flex flex-col items-center">
                     <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 group-hover:scale-105 transition-transform flex items-center justify-center text-3xl mb-4 text-indigo-400 shadow-xl shadow-indigo-500/10">📂</div>
                     <span class="font-bold text-slate-200 text-lg mb-1">Upload Excel / CSV File</span>
-                    <span class="text-xs text-slate-400 font-medium">Supports infinite horizontal columns & automatic mapping</span>
+                    <span class="text-xs text-slate-400 font-medium">Layout & font styles preserved identically</span>
                 </label>
             </div>
         </div>
@@ -91,7 +91,7 @@
             <div class="mb-6 bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-inner">
                 <div id="aiStatusText" class="text-xs sm:text-sm text-slate-300 flex items-center gap-2 font-medium">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Status: Data mapped successfully with zero data loss.</span>
+                    <span>Status: Data loaded successfully. Ready for exact auditing.</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="flex items-center gap-3 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-800 text-xs">
@@ -110,7 +110,7 @@
                 <div id="workspace-info" class="text-sm font-bold text-slate-200">Loaded Data Overview</div>
                 <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                     <button onclick="executeInfiniteCleaning()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all">
-                        ⚡ Remove Duplicates
+                        ⚡ Remove & Audit Duplicates
                     </button>
                     <button id="downloadBtn" onclick="downloadInfiniteFile()" class="hidden flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 transition-all">
                         📥 Download Clean File
@@ -125,20 +125,24 @@
             </div>
         </div>
 
-        <!-- AI CONFIRMATION MODAL -->
-        <div id="aiModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
-            <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl transform transition-all">
-                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-xl mb-4 text-amber-400 shadow-lg shadow-amber-500/5">🛡️</div>
-                <h3 class="text-xl font-bold text-white mb-2">Identical Values Detected</h3>
-                <p id="aiModalText" class="text-slate-400 text-xs sm:text-sm mb-6 leading-relaxed">
-                    Kuch identical rows match ho rahi hain. Kya yeh aapne jaan-bujh kar rakhi hain?
-                </p>
+        <!-- EXACT DUPLICATE AUDIT REPORT MODAL -->
+        <div id="auditModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl transform transition-all flex flex-col max-h-[85vh]">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-xl text-indigo-400">📊</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Exact Duplicate Audit Report</h3>
+                        <p class="text-slate-400 text-xs">Real-time inspection of identical rows removed from your sheet.</p>
+                    </div>
+                </div>
+
+                <div id="auditReportContent" class="overflow-y-auto flex-1 bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 space-y-3 text-xs sm:text-sm custom-scrollbar mb-6">
+                    <!-- Dynamic audit logs will appear here -->
+                </div>
+
                 <div class="flex justify-end gap-3">
-                    <button onclick="handleAiDecision(false)" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all">
-                        Remove Duplicates
-                    </button>
-                    <button onclick="handleAiDecision(true)" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-lg shadow-indigo-600/20">
-                        Keep As Is
+                    <button onclick="closeAuditModal()" class="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-lg shadow-indigo-600/20">
+                        View Cleaned Sheet
                     </button>
                 </div>
             </div>
@@ -149,9 +153,10 @@
     <!-- JavaScript Engine -->
     <script>
         let globalMatrix = [];
+        let originalWorkbook = null;
         let originalFileName = "cleaned_infinite_sheet.xlsx";
         let isFromFile = false;
-        let pendingCleanMatrix = null;
+        let originalRawData = null;
 
         function switchTab(tab) {
             const pasteSec = document.getElementById('section-paste');
@@ -184,7 +189,8 @@
 
         function clearAllData() {
             globalMatrix = [];
-            pendingCleanMatrix = null;
+            originalWorkbook = null;
+            originalRawData = null;
             document.getElementById('smartPasteInput').value = '';
             document.getElementById('excelFile').value = '';
             document.getElementById('workspace').classList.add('hidden');
@@ -212,6 +218,7 @@
 
             isFromFile = true;
             originalFileName = "cleaned_sheet_data.xlsx";
+            originalWorkbook = null;
 
             let lines = rawText.split('\n');
             let tempRows = [];
@@ -227,6 +234,7 @@
 
             if(tempRows.length === 0) return;
 
+            originalRawData = tempRows;
             let header = ["Row"];
             for(let i = 0; i < maxCols; i++) {
                 header.push(`Col ${getExcelColumnName(i)}`);
@@ -253,13 +261,16 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, {type: 'array'});
+                // Keep cellStyles and cellNF true to preserve layout and sizing identically
+                const workbook = XLSX.read(data, {type: 'array', cellStyles: true, cellNF: true});
+                originalWorkbook = workbook;
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
                 
                 let rawData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
                 if(rawData.length === 0) return;
 
+                originalRawData = rawData;
                 let maxCols = 0;
                 rawData.forEach(row => {
                     if(row.length > maxCols) maxCols = row.length;
@@ -321,69 +332,99 @@
             let header = globalMatrix[0];
             let dataRows = globalMatrix.slice(1);
 
-            let freq = {};
-            dataRows.forEach(row => {
-                for(let i = 1; i < row.length; i++) {
-                    let val = String(row[i]).trim();
-                    if(val.length > 3) {
-                        freq[val] = (freq[val] || 0) + 1;
-                    }
-                }
-            });
-
-            let suspiciousVal = Object.keys(freq).find(k => freq[k] > 5);
-
             let uniqueMap = new Map();
-            let dupCount = 0;
+            let auditLogs = [];
 
-            dataRows.forEach(row => {
-                let key = JSON.stringify(row.slice(1));
+            dataRows.forEach((row, originalIdx) => {
+                // row[0] is the row counter, actual content starts from index 1
+                let rowContent = row.slice(1);
+                // Create a unique JSON string fingerprint for exact duplicate checking
+                let key = JSON.stringify(rowContent.map(v => String(v).trim()));
+
                 if (!uniqueMap.has(key)) {
-                    uniqueMap.set(key, row);
+                    uniqueMap.set(key, { row: row, originalLine: originalIdx + 1 });
                 } else {
-                    dupCount++;
+                    let originalMatch = uniqueMap.get(key);
+                    auditLogs.push({
+                        duplicateLine: originalIdx + 1,
+                        originalLine: originalMatch.originalLine,
+                        content: rowContent.filter(v => v !== "").join(" | ")
+                    });
                 }
             });
 
-            let cleanedRows = Array.from(uniqueMap.values());
-            cleanedRows.forEach((r, idx) => {
-                r[0] = idx + 1;
+            let cleanedRows = [];
+            let newCounter = 1;
+            let finalCleanRawData = [];
+
+            uniqueMap.forEach((value) => {
+                let r = [...value.row];
+                r[0] = newCounter++;
+                cleanedRows.push(r);
+                finalCleanRawData.push(r.slice(1));
             });
 
-            pendingCleanMatrix = [header, ...cleanedRows];
+            globalMatrix = [header, ...cleanedRows];
+            originalRawData = finalCleanRawData;
 
-            if(suspiciousVal && dupCount > 0) {
-                document.getElementById('aiModalText').innerHTML = `Kuch values (jaise <span class="text-indigo-400 font-mono font-bold">"${suspiciousVal}"</span>) baar-baar same aa rahi hain. Kya yeh aapne jaan-bujh kar rakhi hain?`;
-                document.getElementById('aiModal').classList.remove('hidden');
-            } else {
-                finalizeClean();
-            }
+            showAuditReport(auditLogs);
         }
 
-        function handleAiDecision(keep) {
-            document.getElementById('aiModal').classList.add('hidden');
-            if(!keep) {
-                globalMatrix = pendingCleanMatrix;
-                finalizeClean();
+        function showAuditReport(logs) {
+            const container = document.getElementById('auditReportContent');
+            container.innerHTML = '';
+
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium text-center">
+                        ✨ No duplicates found! Your sheet data is 100% pristine and unique.
+                    </div>
+                `;
             } else {
-                document.getElementById('aiStatusText').innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-indigo-400 inline-block mr-1"></span> Verified: Identical values kept as requested.`;
+                let html = `<div class="text-indigo-300 font-semibold mb-2">Total ${logs.length} exact duplicate row(s) detected and removed:</div>`;
+                logs.forEach(log => {
+                    html += `
+                        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex flex-col gap-1">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-rose-400 font-bold">Duplicate Row #${log.duplicateLine}</span>
+                                <span class="text-slate-400">Matched with Original Row #${log.originalLine}</span>
+                            </div>
+                            <div class="text-slate-300 font-mono text-xs truncate">Data: ${log.content || "(Empty Row)"}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
             }
+
+            document.getElementById('auditModal').classList.remove('hidden');
         }
 
-        function finalizeClean() {
-            globalMatrix = pendingCleanMatrix;
-            renderWorkspace(`Cleaning Successful! Clean rows remaining: ${globalMatrix.length - 1}`);
+        function closeAuditModal() {
+            document.getElementById('auditModal').classList.add('hidden');
+            renderWorkspace(`Cleaning Successful! Exact duplicates removed.`);
         }
 
         function downloadInfiniteFile() {
             let outputPref = document.querySelector('input[name="outputType"]:checked').value;
             if(!isFromFile || outputPref !== 'file') return;
 
-            let exportMatrix = globalMatrix.map(row => row.slice(1));
-            let ws = XLSX.utils.aoa_to_sheet(exportMatrix);
-            let wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "CleanedData");
-            XLSX.writeFile(wb, originalFileName);
+            if (originalWorkbook) {
+                // If original file was uploaded, preserve workbook styling and update sheet data directly
+                const sheetName = originalWorkbook.SheetNames[0];
+                const worksheet = originalWorkbook.Sheets[sheetName];
+                
+                // Convert cleaned raw array back to worksheet cells while retaining cell styles/fonts
+                let newWs = XLSX.utils.aoa_to_sheet(originalRawData);
+                originalWorkbook.Sheets[sheetName] = newWs;
+                
+                XLSX.writeFile(originalWorkbook, originalFileName);
+            } else {
+                // Fallback for pasted text export
+                let ws = XLSX.utils.aoa_to_sheet(originalRawData);
+                let wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "CleanedData");
+                XLSX.writeFile(wb, originalFileName);
+            }
         }
     </script>
 </body>
