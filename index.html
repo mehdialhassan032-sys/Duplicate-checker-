@@ -28,13 +28,13 @@
         <!-- Header Section -->
         <header class="text-center mb-12">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Force-Highlight Engine Active
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Full File Red Highlighting Active
             </div>
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-3">
                 SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Instant Auditor</span>
             </h1>
             <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                Highlight duplicates instantly in vibrant red with one click.
+                Check and highlight all duplicates across the entire file in vibrant red instantly.
             </p>
         </header>
 
@@ -109,9 +109,11 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
                 <div id="workspace-info" class="text-sm font-bold text-slate-200">Loaded Data Overview</div>
                 <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                    <!-- HIGHLIGHT DUPLICATES BUTTON -->
                     <button onclick="highlightAllDuplicatesManual()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 transition-all shadow-lg">
                         🔴 Highlight Duplicates
                     </button>
+                    <!-- REMOVE DUPLICATES BUTTON -->
                     <button onclick="executeOneClickRemoveDuplicates()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/25 transition-all flex items-center gap-2">
                         ⚡ Remove All Duplicates
                     </button>
@@ -128,50 +130,15 @@
             </div>
         </div>
 
-        <!-- POPUP MODAL (INTENT-BASED YES / NO) -->
+        <!-- POPUP MODAL -->
         <div id="auditModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
             <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl transform transition-all flex flex-col max-h-[85vh]">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-xl text-rose-400">🛡️</div>
                         <div>
-                            <h3 class="text-xl font-bold text-white">Password Duplicate Guard</h3>
-                            <p class="text-slate-400 text-xs">Duplicate data or passwords detected.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-slate-400">🌐 Translate:</span>
-                        <select id="globalLangSelect" onchange="updatePromptLanguage()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-indigo-500 shadow-inner">
-                            <option value="hi" selected>🇮🇳 Roman Hindi</option>
-                            <option value="bn">🇧🇩 Bangla (বাংলা)</option>
-                            <option value="en">🇬🇧 English</option>
-                            <option value="es">🇪🇸 Spanish</option>
-                            <option value="ar">🇸🇦 Arabic</option>
-                            <option value="fr">🇫🇷 French</option>
-                            <option value="zh">🇨🇳 Chinese</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mb-5 p-4 rounded-2xl bg-gradient-to-r from-rose-950/40 to-indigo-950/40 border border-rose-500/30 text-slate-200 shadow-lg space-y-3">
-                    <div class="text-xs uppercase font-extrabold text-rose-400 tracking-wider flex items-center justify-between">
-                        <span>⚠️ Password Intent Prompt</span>
-                        <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px]">Active</span>
-                    </div>
-                    
-                    <p class="text-sm font-bold text-white pt-1">
-                        🌐 <span id="selectedLangLabel">Roman Hindi</span>: <span id="promptGlobal" class="text-emerald-300">"Kya aapne ye password duplicate dala hai?"</span>
-                    </p>
-
-                    <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-rose-500/20">
-                        <span class="text-xs font-semibold text-slate-300">Kripya apna jawab chunen:</span>
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <button onclick="handleMemberResponse('yes')" class="flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold bg-rose-600/30 hover:bg-rose-600 text-rose-200 hover:text-white border border-rose-500/40 transition-all shadow-md">
-                                ✅ Yes (Haan)
-                            </button>
-                            <button onclick="handleMemberResponse('no')" class="flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600/30 hover:bg-emerald-600 text-emerald-200 hover:text-white border border-emerald-500/40 transition-all shadow-md">
-                                ❌ No (Nahi)
-                            </button>
+                            <h3 class="text-xl font-bold text-white">Duplicate Audit Guard</h3>
+                            <p class="text-slate-400 text-xs">Duplicates detected in your sheet.</p>
                         </div>
                     </div>
                 </div>
@@ -196,17 +163,6 @@
         let originalFileName = "cleaned_exact_data.xlsx";
         let isFromFile = false;
         let originalRawData = [];
-        let passwordColIndices = [];
-
-        const translations = {
-            hi: { name: "Roman Hindi", text: "Kya aapne ye password duplicate dala hai?" },
-            bn: { name: "Bangla", text: "আপনি কি এই পাসওয়ার্ডটি ডুপ্লিকেট দিয়েছেন?" },
-            en: { name: "English", text: "Did you enter this password as a duplicate?" },
-            es: { name: "Spanish", text: "¿Introdujiste esta contraseña como un duplicado?" },
-            ar: { name: "Arabic", text: "هل قمنا بإدخال كلمة المرور هذه كنسخة مكررة؟" },
-            fr: { name: "French", text: "Avez-vous entré ce mot de passe en double ?" },
-            zh: { name: "Chinese", text: "您是否重复输入了此密码？" }
-        };
 
         function switchTab(tab) {
             const pasteSec = document.getElementById('section-paste');
@@ -241,7 +197,6 @@
             globalMatrix = [];
             originalWorkbook = null;
             originalRawData = [];
-            passwordColIndices = [];
             document.getElementById('smartPasteInput').value = '';
             document.getElementById('excelFile').value = '';
             document.getElementById('workspace').classList.add('hidden');
@@ -263,17 +218,6 @@
         function normalizeForDetection(val) {
             if (val === undefined || val === null) return "";
             return String(val).trim();
-        }
-
-        function detectPasswordColumns(headers) {
-            let indices = [];
-            headers.forEach((h, idx) => {
-                let lowerH = String(h).toLowerCase().trim();
-                if (lowerH.includes('password') || lowerH.includes('pass') || lowerH.includes('pwd') || lowerH.includes('secret') || lowerH.includes('pin')) {
-                    indices.push(idx);
-                }
-            });
-            return indices;
         }
 
         function processInfiniteColumnsPaste() {
@@ -303,7 +247,6 @@
 
             originalRawData = tempRows;
             let rawHeaders = tempRows[0];
-            passwordColIndices = detectPasswordColumns(rawHeaders);
 
             let header = ["Row"];
             for(let i = 0; i < maxCols; i++) {
@@ -320,7 +263,6 @@
                 globalMatrix.push(paddedRow);
             }
 
-            updateColStatusInfo();
             renderWorkspace(`Loaded: ${globalMatrix.length - 1} rows detected.`);
             checkAutomaticDuplicates();
         }
@@ -349,7 +291,6 @@
                 });
 
                 let rawHeaders = rawData[0] || [];
-                passwordColIndices = detectPasswordColumns(rawHeaders);
 
                 let header = ["Row"];
                 for(let i = 0; i < maxCols; i++) {
@@ -367,45 +308,36 @@
                     globalMatrix.push(paddedRow);
                 }
 
-                updateColStatusInfo();
                 renderWorkspace(`File Loaded: ${file.name} | Total Rows: ${globalMatrix.length - 1}`);
                 checkAutomaticDuplicates();
             };
             reader.readAsArrayBuffer(file);
         }
 
-        function updateColStatusInfo() {
-            const statusEl = document.getElementById('detectedColText');
-            if (passwordColIndices.length > 0) {
-                let passColNames = passwordColIndices.map(idx => globalMatrix[0][idx + 1]).join(", ");
-                statusEl.innerHTML = `Status: Loaded. <span class="text-indigo-400 font-bold">Password Column detected: (${passColNames})</span>`;
-            } else {
-                statusEl.innerHTML = `Status: Loaded. <span class="text-amber-400 font-bold">No explicit Password column detected (General Duplicates active).</span>`;
-            }
-        }
-
+        // FULL FILE DUPLICATE CHECKER MAP (Checks every cell and row value globally)
         function getAllDuplicateCellsMap() {
             let dataRows = globalMatrix.slice(1);
-            let colFrequencyMaps = {};
+            let cellFrequencyMaps = {}; 
+            let rowFrequencyMap = new Map();
+
+            // Step 1: Count frequency of each cell value per column across the whole sheet
             dataRows.forEach((row) => {
+                let rowKey = row.slice(1).map(v => normalizeForDetection(v)).join("||");
+                rowFrequencyMap.set(rowKey, (rowFrequencyMap.get(rowKey) || 0) + 1);
+
                 row.forEach((cellVal, cIdx) => {
                     if (cIdx === 0) return;
                     let normVal = normalizeForDetection(cellVal);
                     if (normVal !== "") {
-                        if (!colFrequencyMaps[cIdx]) colFrequencyMaps[cIdx] = new Map();
-                        colFrequencyMaps[cIdx].set(normVal, (colFrequencyMaps[cIdx].get(normVal) || 0) + 1);
+                        if (!cellFrequencyMaps[cIdx]) cellFrequencyMaps[cIdx] = new Map();
+                        cellFrequencyMaps[cIdx].set(normVal, (cellFrequencyMaps[cIdx].get(normVal) || 0) + 1);
                     }
                 });
             });
 
-            let rowFrequencyMap = new Map();
-            dataRows.forEach((row) => {
-                let rowKey = row.slice(1).map(v => normalizeForDetection(v)).join("||");
-                rowFrequencyMap.set(rowKey, (rowFrequencyMap.get(rowKey) || 0) + 1);
-            });
-
             let duplicateCellsMap = new Map();
 
+            // Step 2: Mark all cells that appear more than once or belong to duplicate rows
             dataRows.forEach((row, idx) => {
                 let rIdx = idx + 1;
                 let rowKey = row.slice(1).map(v => normalizeForDetection(v)).join("||");
@@ -416,7 +348,7 @@
                     let normVal = normalizeForDetection(cellVal);
                     if (normVal === "") return;
 
-                    let colFreq = colFrequencyMaps[cIdx] ? colFrequencyMaps[cIdx].get(normVal) || 0 : 0;
+                    let colFreq = cellFrequencyMaps[cIdx] ? cellFrequencyMaps[cIdx].get(normVal) || 0 : 0;
                     let isDuplicate = (colFreq > 1) || isFullRowDuplicate;
 
                     if (isDuplicate) {
@@ -451,7 +383,7 @@
                         td.className += " text-slate-500 font-mono";
                         td.innerText = cell;
                     } else if (rIdx > 0 && highlightMap.has(rIdx) && highlightMap.get(rIdx).has(cIdx)) {
-                        td.className += " text-rose-400 font-bold bg-rose-500/10 border-y border-rose-500/20";
+                        td.className += " text-rose-400 font-bold bg-rose-500/20 border-y border-rose-500/40 animate-pulse";
                         td.innerText = cell !== undefined && cell !== null ? cell : '';
                     } else {
                         td.innerText = cell !== undefined && cell !== null ? cell : '';
@@ -478,10 +410,15 @@
             }
         }
 
+        // MANUAL HIGHLIGHT BUTTON ACTION
         function highlightAllDuplicatesManual() {
             let dupMap = getAllDuplicateCellsMap();
-            renderWorkspace(`Duplicate audit scan executed. All duplicates highlighted RED.`, dupMap);
-            alert('Saare duplicates ab RED highlight ho gaye hain!');
+            if(dupMap.size === 0) {
+                alert('File me koi bhi duplicate data nahi mila!');
+                return;
+            }
+            renderWorkspace(`Full file scan executed: All duplicates highlighted in RED.`, dupMap);
+            alert('Poori file check ho gayi hai aur sabhi duplicates RED highlight ho gaye hain!');
         }
 
         function executeOneClickRemoveDuplicates() {
@@ -496,7 +433,7 @@
             let uniqueMap = new Map();
             let auditLogs = [];
 
-            dataRows.forEach((row, index) => {
+            dataRows.forEach((row) => {
                 let originalLineNum = row[0];
                 let rowContent = row.slice(1);
                 let rowKey = rowContent.join("|");
@@ -531,31 +468,17 @@
             showAuditReport(auditLogs);
         }
 
-        function updatePromptLanguage() {
-            const langCode = document.getElementById('globalLangSelect').value;
-            const langObj = translations[langCode];
-            
-            document.getElementById('selectedLangLabel').innerText = langObj.name;
-            document.getElementById('promptGlobal').innerText = `"${langObj.text}"`;
-        }
-
-        function handleMemberResponse(choice) {
-            closeAuditModal();
-        }
-
         function showAuditReportAuto() {
-            updatePromptLanguage();
             const container = document.getElementById('auditReportContent');
             container.innerHTML = `
                 <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 font-medium text-center">
-                    🚨 Duplicate data or passwords detected in your sheet!
+                    🚨 Duplicate records detected across your file! Click 'Highlight Duplicates' to view them in red.
                 </div>
             `;
             document.getElementById('auditModal').classList.remove('hidden');
         }
 
         function showAuditReport(logs) {
-            updatePromptLanguage();
             const container = document.getElementById('auditReportContent');
             container.innerHTML = '';
 
