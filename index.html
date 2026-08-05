@@ -109,8 +109,12 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
                 <div id="workspace-info" class="text-sm font-bold text-slate-200">Loaded Data Overview</div>
                 <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                    <!-- Highlight Duplicates Button -->
+                    <button onclick="highlightDuplicateRows()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 transition-all shadow-lg">
+                        🔴 Highlight Duplicates (Red)
+                    </button>
                     <button onclick="executeInfiniteCleaning()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all">
-                        ⚡ Remove & Audit Duplicates
+                        ⚡ Remove & Audit
                     </button>
                     <button id="downloadBtn" onclick="downloadInfiniteFile()" class="hidden flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 transition-all">
                         📥 Download Clean File
@@ -137,7 +141,7 @@
                 </div>
 
                 <div id="auditReportContent" class="overflow-y-auto flex-1 bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 space-y-3 text-xs sm:text-sm custom-scrollbar mb-6">
-                    <!-- Dynamic audit logs will appear here -->
+                    <!-- Dynamic audit logs -->
                 </div>
 
                 <div class="flex justify-end gap-3">
@@ -261,7 +265,6 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const data = new Uint8Array(e.target.result);
-                // Keep cellStyles and cellNF true to preserve layout and sizing identically
                 const workbook = XLSX.read(data, {type: 'array', cellStyles: true, cellNF: true});
                 originalWorkbook = workbook;
                 const sheetName = workbook.SheetNames[0];
@@ -296,7 +299,7 @@
             reader.readAsArrayBuffer(file);
         }
 
-        function renderWorkspace(statusMsg) {
+        function renderWorkspace(statusMsg, highlightedDuplicateIndices = new Set()) {
             document.getElementById('workspace').classList.remove('hidden');
             document.getElementById('workspace-info').innerText = statusMsg;
             
@@ -305,7 +308,14 @@
 
             globalMatrix.forEach((row, rIdx) => {
                 let tr = document.createElement('tr');
-                tr.className = rIdx === 0 ? "bg-slate-900 text-indigo-400 font-bold sticky top-0 uppercase text-xs tracking-wider border-b border-slate-800" : "border-b border-slate-900 hover:bg-slate-900/40 transition-colors";
+                
+                if (rIdx === 0) {
+                    tr.className = "bg-slate-900 text-indigo-400 font-bold sticky top-0 uppercase text-xs tracking-wider border-b border-slate-800";
+                } else if (highlightedDuplicateIndices.has(rIdx)) {
+                    tr.className = "bg-rose-950/60 border-b border-rose-900/50 text-rose-200 transition-colors";
+                } else {
+                    tr.className = "border-b border-slate-900 hover:bg-slate-900/40 transition-colors";
+                }
                 
                 row.forEach((cell, cIdx) => {
                     let tag = rIdx === 0 ? 'th' : 'td';
@@ -326,6 +336,34 @@
             }
         }
 
+        function highlightDuplicateRows() {
+            if(globalMatrix.length <= 1) return;
+
+            let dataRows = globalMatrix.slice(1);
+            let seenMap = new Map();
+            let duplicateIndices = new Set();
+
+            dataRows.forEach((row, idx) => {
+                let rowContent = row.slice(1);
+                let key = JSON.stringify(rowContent.map(v => String(v).trim()));
+
+                if (seenMap.has(key)) {
+                    // Mark both current and original occurrence or just current duplicates as red
+                    duplicateIndices.add(idx + 1);
+                    // Also mark the original one if desired, or just the duplicate matches:
+                    duplicateIndices.add(seenMap.get(key));
+                } else {
+                    seenMap.set(key, idx + 1);
+                }
+            });
+
+            if(duplicateIndices.size === 0) {
+                alert('Koi bhi duplicate row nahi mili! Aapka data clean hai.');
+            } else {
+                renderWorkspace(`Highlighting ${duplicateIndices.size} duplicate/matching rows in Red.`, duplicateIndices);
+            }
+        }
+
         function executeInfiniteCleaning() {
             if(globalMatrix.length <= 1) return;
 
@@ -336,9 +374,7 @@
             let auditLogs = [];
 
             dataRows.forEach((row, originalIdx) => {
-                // row[0] is the row counter, actual content starts from index 1
                 let rowContent = row.slice(1);
-                // Create a unique JSON string fingerprint for exact duplicate checking
                 let key = JSON.stringify(rowContent.map(v => String(v).trim()));
 
                 if (!uniqueMap.has(key)) {
@@ -409,17 +445,11 @@
             if(!isFromFile || outputPref !== 'file') return;
 
             if (originalWorkbook) {
-                // If original file was uploaded, preserve workbook styling and update sheet data directly
                 const sheetName = originalWorkbook.SheetNames[0];
-                const worksheet = originalWorkbook.Sheets[sheetName];
-                
-                // Convert cleaned raw array back to worksheet cells while retaining cell styles/fonts
                 let newWs = XLSX.utils.aoa_to_sheet(originalRawData);
                 originalWorkbook.Sheets[sheetName] = newWs;
-                
                 XLSX.writeFile(originalWorkbook, originalFileName);
             } else {
-                // Fallback for pasted text export
                 let ws = XLSX.utils.aoa_to_sheet(originalRawData);
                 let wb = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(wb, ws, "CleanedData");
