@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Infinite Column Duplicate Cleaner</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-zinc-950 to-slate-900 text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent mb-3">
+                Infinite Column Sheet Cleaner 
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base">
+                Supports unlimited columns (A to Z and beyond) with zero data loss & smart duplicate removal.
+            </p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center gap-4 mb-6">
+            <button onclick="switchTab('paste')" id="btn-paste" class="px-6 py-2.5 rounded-xl font-semibold bg-cyan-600 text-white transition shadow-lg shadow-cyan-600/30">
+                 Paste from Google Sheets
+            </button>
+            <button onclick="switchTab('sheet')" id="btn-sheet" class="px-6 py-2.5 rounded-xl font-semibold bg-slate-800 text-slate-400 hover:bg-slate-700 transition">
+                 Upload Sheet File (.xlsx / .csv)
+            </button>
+        </div>
+
+        <!-- SECTION 1: GOOGLE SHEETS SMART PASTE -->
+        <div id="section-paste" class="bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-xl">
+            <div class="flex justify-between items-center mb-2">
+                <label class="font-semibold text-slate-200">Google Sheets se kitna bhi bada data (A to Z columns tak) copy karke paste karein:</label>
+                <button onclick="triggerAutoPaste()" class="bg-slate-700 hover:bg-slate-600 text-cyan-300 text-xs px-3 py-1.5 rounded-lg transition font-medium">
+                     Click to Auto-Paste
+                </button>
+            </div>
+            
+            <textarea id="smartPasteInput" rows="6" placeholder="Yahan Google Sheets ka data paste karein. Website automatically infinite columns (A, B, C... Z) ko read kar legi..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-4 text-slate-200 focus:outline-none focus:border-cyan-500 transition mb-4 text-sm font-mono"></textarea>
+            
+            <button onclick="processInfiniteColumnsPaste()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-medium px-6 py-2.5 rounded-xl transition shadow-md">
+                 Auto-Detect Columns & Clean Duplicates
+            </button>
+        </div>
+
+        <!-- SECTION 2: SHEET FILE UPLOAD -->
+        <div id="section-sheet" class="hidden bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-xl">
+            <div class="mb-6 border-2 border-dashed border-slate-700 hover:border-cyan-500 rounded-2xl p-8 text-center transition bg-slate-900/40">
+                <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" onchange="handleInfiniteFileUpload(event)" class="hidden">
+                <label for="excelFile" class="cursor-pointer flex flex-col items-center">
+                    <span class="text-4xl mb-2"></span>
+                    <span class="font-semibold text-slate-200 text-lg mb-1">Upload Excel / CSV File (Any Column Length)</span>
+                    <span class="text-xs text-slate-400">Supports A to Z and unlimited columns</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- WORKSPACE PANEL -->
+        <div id="workspace" class="hidden mt-6 bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-xl">
+            <div id="aiResponseBox" class="mb-4 bg-slate-900/80 border-l-4 border-cyan-500 p-4 rounded-r-xl text-sm text-slate-300 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div id="aiStatusText">
+                    <span class="font-bold text-cyan-400">Status:</span> Infinite columns mapped successfully with zero data loss.
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-xl border border-slate-700 text-xs">
+                        <span class="text-slate-400">Output:</span>
+                        <label class="cursor-pointer flex items-center gap-1 text-slate-200 font-medium">
+                            <input type="radio" name="outputType" value="file" checked class="accent-cyan-500"> File (.xlsx)
+                        </label>
+                        <label class="cursor-pointer flex items-center gap-1 text-slate-200 font-medium">
+                            <input type="radio" name="outputType" value="text" class="accent-cyan-500"> View Only
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mb-4">
+                <div id="workspace-info" class="text-sm font-semibold text-slate-200">Loaded Data Overview</div>
+                <div class="flex gap-3">
+                    <button onclick="executeInfiniteCleaning()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-medium px-5 py-2.5 rounded-xl transition shadow-md">
+                         Remove Duplicates
+                    </button>
+                    <button id="downloadBtn" onclick="downloadInfiniteFile()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl transition shadow-lg shadow-emerald-600/30">
+                         Download Clean File
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Infinite Table Grid -->
+            <div class="overflow-x-auto max-h-96 border border-slate-700 rounded-xl bg-slate-900/90">
+                <table id="workspaceTable" class="w-full text-left border-collapse text-sm text-slate-300 whitespace-nowrap">
+                </table>
+            </div>
+        </div>
+
+        <!-- AI CONFIRMATION MODAL -->
+        <div id="aiModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+                <h3 class="text-xl font-bold text-amber-400 mb-2"> Smart Notice: Identical Values Detected</h3>
+                <p id="aiModalText" class="text-slate-300 text-sm mb-6">
+                    Kuch columns ya passwords baar-baar same hain. Kya yeh aapne jaan-bujh kar rakhi hain?
+                </p>
+                <div class="flex justify-end gap-3">
+                    <button onclick="handleAiDecision(false)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-sm font-medium transition">
+                        Nahi, Duplicates Hata Do
+                    </button>
+                    <button onclick="handleAiDecision(true)" class="bg-cyan-600 hover:bg-cyan-500 text-white px-5 py-2 rounded-xl text-sm font-medium transition">
+                        Haan, Keep It
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Engine -->
+    <script>
+        let globalMatrix = [];
+        let originalFileName = "cleaned_infinite_sheet.xlsx";
+        let isFromFile = false;
+        let pendingCleanMatrix = null;
+
+        function switchTab(tab) {
+            const pasteSec = document.getElementById('section-paste');
+            const sheetSec = document.getElementById('section-sheet');
+            const btnPaste = document.getElementById('btn-paste');
+            const btnSheet = document.getElementById('btn-sheet');
+
+            if (tab === 'paste') {
+                pasteSec.classList.remove('hidden');
+                sheetSec.classList.add('hidden');
+                btnPaste.className = "px-6 py-2.5 rounded-xl font-semibold bg-cyan-600 text-white transition shadow-lg shadow-cyan-600/30";
+                btnSheet.className = "px-6 py-2.5 rounded-xl font-semibold bg-slate-800 text-slate-400 hover:bg-slate-700 transition";
+            } else {
+                pasteSec.classList.add('hidden');
+                sheetSec.classList.remove('hidden');
+                btnSheet.className = "px-6 py-2.5 rounded-xl font-semibold bg-cyan-600 text-white transition shadow-lg shadow-cyan-600/30";
+                btnPaste.className = "px-6 py-2.5 rounded-xl font-semibold bg-slate-800 text-slate-400 hover:bg-slate-700 transition";
+            }
+        }
+
+        async function triggerAutoPaste() {
+            try {
+                let text = await navigator.clipboard.readText();
+                document.getElementById('smartPasteInput').value = text;
+                processInfiniteColumnsPaste();
+            } catch (err) {
+                alert('Kripya textarea par click karke manually Ctrl + V dabayein.');
+            }
+        }
+
+        // Helper to convert column index (0, 1, 2...) to Excel Column Letters (A, B, C... Z, AA, AB...)
+        function getExcelColumnName(colIndex) {
+            let columnName = '';
+            let num = colIndex + 1;
+            while (num > 0) {
+                let remainder = (num - 1) % 26;
+                columnName = String.fromCharCode(65 + remainder) + columnName;
+                num = Math.floor((num - 1) / 26);
+            }
+            return columnName;
+        }
+
+        // Process infinite columns from pasted Google Sheet text
+        function processInfiniteColumnsPaste() {
+            const rawText = document.getElementById('smartPasteInput').value;
+            if (!rawText.trim()) {
+                alert('Kripya Google Sheets se data copy karke paste karein!');
+                return;
+            }
+
+            isFromFile = true;
+            originalFileName = "cleaned_sheet_data.xlsx";
+
+            let lines = rawText.split('\n');
+            let tempRows = [];
+            let maxCols = 0;
+
+            lines.forEach(line => {
+                if(line.trim() !== "") {
+                    let cols = line.split('\t').map(c => c.trim());
+                    if(cols.length > maxCols) maxCols = cols.length;
+                    tempRows.push(cols);
+                }
+            });
+
+            if(tempRows.length === 0) return;
+
+            // Generate dynamic Excel headers (Row, A, B, C... up to maxCols)
+            let header = ["Row"];
+            for(let i = 0; i < maxCols; i++) {
+                header.push(`Col ${getExcelColumnName(i)}`);
+            }
+
+            globalMatrix = [header];
+            tempRows.forEach((row, idx) => {
+                let paddedRow = [idx + 1];
+                for(let i = 0; i < maxCols; i++) {
+                    paddedRow.push(row[i] !== undefined ? row[i] : "");
+                }
+                globalMatrix.push(paddedRow);
+            });
+
+            renderWorkspace(`Google Sheets Data Loaded: ${globalMatrix.length - 1} rows with ${maxCols} columns detected.`);
+        }
+
+        // Handle uploaded file with infinite columns support
+        function handleInfiniteFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            originalFileName = "clean_" + file.name;
+            isFromFile = true;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                
+                let rawData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                if(rawData.length === 0) return;
+
+                let maxCols = 0;
+                rawData.forEach(row => {
+                    if(row.length > maxCols) maxCols = row.length;
+                });
+
+                let header = ["Row"];
+                for(let i = 0; i < maxCols; i++) {
+                    header.push(`Col ${getExcelColumnName(i)}`);
+                }
+
+                globalMatrix = [header];
+                for(let i = 0; i < rawData.length; i++) {
+                    let rowData = rawData[i];
+                    let paddedRow = [i + 1];
+                    for(let j = 0; j < maxCols; j++) {
+                        paddedRow.push(rowData[j] !== undefined ? rowData[j] : "");
+                    }
+                    globalMatrix.push(paddedRow);
+                }
+
+                renderWorkspace(`File Loaded: ${file.name} | Total Rows: ${globalMatrix.length - 1} | Columns: A to ${getExcelColumnName(maxCols - 1)}`);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderWorkspace(statusMsg) {
+            document.getElementById('workspace').classList.remove('hidden');
+            document.getElementById('workspace-info').innerText = statusMsg;
+            
+            const table = document.getElementById('workspaceTable');
+            table.innerHTML = '';
+
+            globalMatrix.forEach((row, rIdx) => {
+                let tr = document.createElement('tr');
+                tr.className = rIdx === 0 ? "bg-slate-800 text-cyan-300 font-semibold sticky top-0 uppercase text-xs tracking-wider" : "border-b border-slate-800 hover:bg-slate-800/40";
+                
+                row.forEach((cell, cIdx) => {
+                    let tag = rIdx === 0 ? 'th' : 'td';
+                    let td = document.createElement(tag);
+                    td.className = "px-4 py-3";
+                    td.innerText = cell !== undefined && cell !== null ? cell : '';
+                    if(cIdx === 0 && rIdx > 0) td.className += " text-slate-500 font-mono text-xs";
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+
+            let outputPref = document.querySelector('input[name="outputType"]:checked').value;
+            if(isFromFile && outputPref === 'file') {
+                document.getElementById('downloadBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('downloadBtn').classList.add('hidden');
+            }
+        }
+
+        function executeInfiniteCleaning() {
+            if(globalMatrix.length <= 1) return;
+
+            let header = globalMatrix[0];
+            let dataRows = globalMatrix.slice(1);
+
+            let freq = {};
+            dataRows.forEach(row => {
+                for(let i = 1; i < row.length; i++) {
+                    let val = String(row[i]).trim();
+                    if(val.length > 3) {
+                        freq[val] = (freq[val] || 0) + 1;
+                    }
+                }
+            });
+
+            let suspiciousVal = Object.keys(freq).find(k => freq[k] > 5);
+
+            let uniqueMap = new Map();
+            let dupCount = 0;
+
+            dataRows.forEach(row => {
+                let key = JSON.stringify(row.slice(1));
+                if (!uniqueMap.has(key)) {
+                    uniqueMap.set(key, row);
+                } else {
+                    dupCount++;
+                }
+            });
+
+            let cleanedRows = Array.from(uniqueMap.values());
+            cleanedRows.forEach((r, idx) => {
+                r[0] = idx + 1;
+            });
+
+            pendingCleanMatrix = [header, ...cleanedRows];
+
+            if(suspiciousVal && dupCount > 0) {
+                document.getElementById('aiModalText').innerHTML = `Kuch values (jaise <span class="text-cyan-300 font-mono">"${suspiciousVal}"</span>) baar-baar same aa rahi hain. Kya yeh aapne jaan-bujh kar rakhi hain?`;
+                document.getElementById('aiModal').classList.remove('hidden');
+            } else {
+                finalizeClean();
+            }
+        }
+
+        function handleAiDecision(keep) {
+            document.getElementById('aiModal').classList.add('hidden');
+            if(!keep) {
+                globalMatrix = pendingCleanMatrix;
+                finalizeClean();
+            } else {
+                document.getElementById('aiStatusText').innerHTML = `<span class="font-bold text-emerald-400">Verified:</span> Identical values kept as requested.`;
+            }
+        }
+
+        function finalizeClean() {
+            globalMatrix = pendingCleanMatrix;
+            renderWorkspace(`Cleaning Successful! Clean rows remaining: ${globalMatrix.length - 1}`);
+        }
+
+        function downloadInfiniteFile() {
+            let outputPref = document.querySelector('input[name="outputType"]:checked').value;
+            if(!isFromFile || outputPref !== 'file') return;
+
+            // Remove the Row tracking index column (index 0) before export
+            let exportMatrix = globalMatrix.map(row => row.slice(1));
+            let ws = XLSX.utils.aoa_to_sheet(exportMatrix);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "CleanedData");
+            XLSX.writeFile(wb, originalFileName);
+        }
+    </script>
+</body>
+</html>
