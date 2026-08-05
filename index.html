@@ -34,7 +34,7 @@
                 SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Exact Cleaner</span>
             </h1>
             <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                Real duplicate row auditing with absolute layout preservation. Zero fake data, 100% exact matching.
+                Real duplicate cell auditing with absolute layout preservation. Zero fake data, smart cell-level red highlighting.
             </p>
         </header>
 
@@ -109,9 +109,9 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
                 <div id="workspace-info" class="text-sm font-bold text-slate-200">Loaded Data Overview</div>
                 <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                    <!-- Highlight Duplicates Button -->
-                    <button onclick="highlightDuplicateRows()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 transition-all shadow-lg">
-                        🔴 Highlight Duplicates (Red)
+                    <!-- Highlight Duplicate Cells Button -->
+                    <button onclick="highlightDuplicateCells()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 transition-all shadow-lg">
+                        🔴 Highlight Duplicate Cells
                     </button>
                     <button onclick="executeInfiniteCleaning()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all">
                         ⚡ Remove & Audit
@@ -299,7 +299,7 @@
             reader.readAsArrayBuffer(file);
         }
 
-        function renderWorkspace(statusMsg, highlightedDuplicateIndices = new Set()) {
+        function renderWorkspace(statusMsg, duplicateCellsMap = new Map()) {
             document.getElementById('workspace').classList.remove('hidden');
             document.getElementById('workspace-info').innerText = statusMsg;
             
@@ -308,22 +308,25 @@
 
             globalMatrix.forEach((row, rIdx) => {
                 let tr = document.createElement('tr');
-                
-                if (rIdx === 0) {
-                    tr.className = "bg-slate-900 text-indigo-400 font-bold sticky top-0 uppercase text-xs tracking-wider border-b border-slate-800";
-                } else if (highlightedDuplicateIndices.has(rIdx)) {
-                    tr.className = "bg-rose-950/60 border-b border-rose-900/50 text-rose-200 transition-colors";
-                } else {
-                    tr.className = "border-b border-slate-900 hover:bg-slate-900/40 transition-colors";
-                }
+                tr.className = rIdx === 0 ? "bg-slate-900 text-indigo-400 font-bold sticky top-0 uppercase text-xs tracking-wider border-b border-slate-800" : "border-b border-slate-900/80 hover:bg-slate-900/40 transition-colors";
                 
                 row.forEach((cell, cIdx) => {
                     let tag = rIdx === 0 ? 'th' : 'td';
                     let td = document.createElement(tag);
                     td.className = "px-4 py-3";
-                    td.innerText = cell !== undefined && cell !== null ? cell : '';
-                    if(cIdx === 0 && rIdx > 0) td.className += " text-slate-500 font-mono";
-                    tr.appendChild(td);
+                    
+                    if(cIdx === 0 && rIdx > 0) {
+                        td.className += " text-slate-500 font-mono";
+                        td.innerText = cell;
+                    } else if (rIdx > 0 && duplicateCellsMap.has(rIdx) && duplicateCellsMap.get(rIdx).has(cIdx)) {
+                        // Highlight ONLY the specific cell text in Red and Bold
+                        td.className += " text-rose-400 font-bold bg-rose-950/30 rounded px-1";
+                        td.innerText = cell !== undefined && cell !== null ? cell : '';
+                    } else {
+                        td.innerText = cell !== undefined && cell !== null ? cell : '';
+                    }
+
+                        tr.appendChild(td);
                 });
                 table.appendChild(tr);
             });
@@ -336,31 +339,50 @@
             }
         }
 
-        function highlightDuplicateRows() {
+        function highlightDuplicateCells() {
             if(globalMatrix.length <= 1) return;
 
             let dataRows = globalMatrix.slice(1);
-            let seenMap = new Map();
-            let duplicateIndices = new Set();
+            let seenCellsMap = {}; // colIndex -> Set of seen values or tracking
+            let duplicateCellsMap = new Map(); // rIdx -> Set of cIdx that are duplicate
+            let totalDupCount = 0;
+
+            // Checking duplicates cell-by-cell or row-by-row based on exact match requirement
+            // Let's track exact duplicate rows, but highlight specific cells that match across rows
+            let rowSeenMap = new Map();
 
             dataRows.forEach((row, idx) => {
+                let rIdx = idx + 1;
                 let rowContent = row.slice(1);
                 let key = JSON.stringify(rowContent.map(v => String(v).trim()));
 
-                if (seenMap.has(key)) {
-                    // Mark both current and original occurrence or just current duplicates as red
-                    duplicateIndices.add(idx + 1);
-                    // Also mark the original one if desired, or just the duplicate matches:
-                    duplicateIndices.add(seenMap.get(key));
+                if (rowSeenMap.has(key)) {
+                    // This entire row is a duplicate row, so highlight its data cells
+                    if (!duplicateCellsMap.has(rIdx)) duplicateCellsMap.set(rIdx, new Set());
+                    for (let c = 1; c < row.length; c++) {
+                        if(String(row[c]).trim() !== "") {
+                            duplicateCellsMap.get(rIdx).add(c);
+                            totalDupCount++;
+                        }
+                    }
+                    
+                    // Also highlight the original occurrence cells so user can see both matched parts
+                    let originalRIdx = rowSeenMap.get(key);
+                    if (!duplicateCellsMap.has(originalRIdx)) duplicateCellsMap.set(originalRIdx, new Set());
+                    for (let c = 1; c < row.length; c++) {
+                        if(String(row[c]).trim() !== "") {
+                            duplicateCellsMap.get(originalRIdx).add(c);
+                        }
+                    }
                 } else {
-                    seenMap.set(key, idx + 1);
+                    rowSeenMap.set(key, rIdx);
                 }
             });
 
-            if(duplicateIndices.size === 0) {
-                alert('Koi bhi duplicate row nahi mili! Aapka data clean hai.');
+            if(duplicateCellsMap.size === 0) {
+                alert('Koi bhi duplicate data nahi mila! Aapka sheet bilkul unique hai.');
             } else {
-                renderWorkspace(`Highlighting ${duplicateIndices.size} duplicate/matching rows in Red.`, duplicateIndices);
+                renderWorkspace(`Highlighted duplicate text cells in red across matching rows.`, duplicateCellsMap);
             }
         }
 
