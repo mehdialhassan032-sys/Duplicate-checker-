@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheetPulse Pro - Precision Duplicate Inspection Suite</title>
+    <title>SheetPulse Pro - Smart Fuzzy Duplicate Suite</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS library -->
@@ -28,13 +28,13 @@
         <!-- Header Section -->
         <header class="text-center mb-12">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
-                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Precision Audit Suite
+                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Smart Fuzzy Audit Suite
             </div>
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-3">
-                SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Exact Cleaner</span>
+                SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Smart Cleaner</span>
             </h1>
             <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                True cell-level frequency auditing. Any repeating text across rows & columns gets instantly highlighted.
+                Advanced normalization engine. Ignores minor symbol, colon, or punctuation variations for robust duplicate tracking.
             </p>
         </header>
 
@@ -91,7 +91,7 @@
             <div class="mb-6 bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-inner">
                 <div id="aiStatusText" class="text-xs sm:text-sm text-slate-300 flex items-center gap-2 font-medium">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Status: Data loaded successfully. Ready for exact auditing.</span>
+                    <span>Status: Data loaded successfully. Ready for smart auditing.</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="flex items-center gap-3 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-800 text-xs">
@@ -110,10 +110,10 @@
                 <div id="workspace-info" class="text-sm font-bold text-slate-200">Loaded Data Overview</div>
                 <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                     <!-- Highlight Duplicate Text Button -->
-                    <button onclick="highlightDuplicateCellsText()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 transition-all shadow-lg">
+                    <button onclick="highlightSmartDuplicates()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 transition-all shadow-lg">
                         🔴 Highlight Duplicate Text
                     </button>
-                    <button onclick="executeInfiniteCleaning()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all">
+                    <button onclick="executeSmartCleaning()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all">
                         ⚡ Remove & Audit
                     </button>
                     <button id="downloadBtn" onclick="downloadInfiniteFile()" class="hidden flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 transition-all">
@@ -135,8 +135,8 @@
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-xl text-indigo-400">📊</div>
                     <div>
-                        <h3 class="text-xl font-bold text-white">Exact Duplicate Audit Report</h3>
-                        <p class="text-slate-400 text-xs">Real-time inspection of identical rows removed from your sheet.</p>
+                        <h3 class="text-xl font-bold text-white">Smart Duplicate Audit Report</h3>
+                        <p class="text-slate-400 text-xs">Real-time inspection of smart duplicate rows removed from your sheet.</p>
                     </div>
                 </div>
 
@@ -211,6 +211,17 @@
                 num = Math.floor((num - 1) / 26);
             }
             return columnName;
+        }
+
+        // SMART NORMALIZATION FUNCTION: Ignores colons, extra symbols, dashes, and extra spaces
+        function normalizeText(val) {
+            if (val === undefined || val === null) return "";
+            let str = String(val).toLowerCase().trim();
+            // Remove common separators/symbols like colons, plus, hyphens, underscores to catch core matches
+            str = str.replace(/[:\-_+=|@]/g, ""); 
+            // Remove extra inner spaces
+            str = str.replace(/\s+/g, "");
+            return str;
         }
 
         function processInfiniteColumnsPaste() {
@@ -319,7 +330,7 @@
                         td.className += " text-slate-500 font-mono";
                         td.innerText = cell;
                     } else if (rIdx > 0 && duplicateCellsMap.has(rIdx) && duplicateCellsMap.get(rIdx).has(cIdx)) {
-                        // TRUE CELL-LEVEL REPEATING TEXT HIGHLIGHT (Bright Red & Bold)
+                        // SMART HIGHLIGHTING (Bright Red & Bold Text)
                         td.className += " text-rose-400 font-bold";
                         td.innerText = cell !== undefined && cell !== null ? cell : '';
                     } else {
@@ -339,29 +350,28 @@
             }
         }
 
-        function highlightDuplicateCellsText() {
+        function highlightSmartDuplicates() {
             if(globalMatrix.length <= 1) return;
 
             let dataRows = globalMatrix.slice(1);
-            let valueCountMap = new Map();
+            let normalizedCountMap = new Map();
 
-            // Step 1: Count frequency of each exact text value across the entire data body
+            // Count frequency based on normalized text across the dataset
             dataRows.forEach((row) => {
                 for (let c = 1; c < row.length; c++) {
-                    let val = String(row[c]).trim();
-                    if (val !== "") {
-                        valueCountMap.set(val, (valueCountMap.get(val) || 0) + 1);
+                    let normVal = normalizeText(row[c]);
+                    if (normVal !== "") {
+                        normalizedCountMap.set(normVal, (normalizedCountMap.get(normVal) || 0) + 1);
                     }
                 }
             });
 
-            // Step 2: Mark cells as duplicate if their text appears more than once in the dataset
             let duplicateCellsMap = new Map();
             dataRows.forEach((row, idx) => {
                 let rIdx = idx + 1;
                 for (let c = 1; c < row.length; c++) {
-                    let val = String(row[c]).trim();
-                    if (val !== "" && valueCountMap.get(val) > 1) {
+                    let normVal = normalizeText(row[c]);
+                    if (normVal !== "" && normalizedCountMap.get(normVal) > 1) {
                         if (!duplicateCellsMap.has(rIdx)) {
                             duplicateCellsMap.set(rIdx, new Set());
                         }
@@ -371,13 +381,13 @@
             });
 
             if(duplicateCellsMap.size === 0) {
-                alert('Koi bhi repeating text nahi mila!');
+                alert('Koi bhi matching duplicate text nahi mila!');
             } else {
-                renderWorkspace(`Highlighted all repeating duplicate text values in red.`, duplicateCellsMap);
+                renderWorkspace(`Smart Highlight: Minor symbol/colon variations bypassed. Duplicates highlighted.`, duplicateCellsMap);
             }
         }
 
-        function executeInfiniteCleaning() {
+        function executeSmartCleaning() {
             if(globalMatrix.length <= 1) return;
 
             let header = globalMatrix[0];
@@ -388,12 +398,13 @@
 
             dataRows.forEach((row, originalIdx) => {
                 let rowContent = row.slice(1);
-                let key = JSON.stringify(rowContent.map(v => String(v).trim()));
+                // Create a normalized row signature key to catch near-duplicates with minor colon/symbol differences
+                let normalizedRowKey = rowContent.map(v => normalizeText(v)).join("|");
 
-                if (!uniqueMap.has(key)) {
-                    uniqueMap.set(key, { row: row, originalLine: originalIdx + 1 });
+                if (!uniqueMap.has(normalizedRowKey)) {
+                    uniqueMap.set(normalizedRowKey, { row: row, originalLine: originalIdx + 1 });
                 } else {
-                    let originalMatch = uniqueMap.get(key);
+                    let originalMatch = uniqueMap.get(normalizedRowKey);
                     auditLogs.push({
                         duplicateLine: originalIdx + 1,
                         originalLine: originalMatch.originalLine,
@@ -430,7 +441,7 @@
                     </div>
                 `;
             } else {
-                let html = `<div class="text-indigo-300 font-semibold mb-2">Total ${logs.length} exact duplicate row(s) detected and removed:</div>`;
+                let html = `<div class="text-indigo-300 font-semibold mb-2">Total ${logs.length} smart duplicate row(s) detected and removed:</div>`;
                 logs.forEach(log => {
                     html += `
                         <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex flex-col gap-1">
@@ -450,7 +461,7 @@
 
         function closeAuditModal() {
             document.getElementById('auditModal').classList.add('hidden');
-            renderWorkspace(`Cleaning Successful! Exact duplicates removed.`);
+            renderWorkspace(`Cleaning Successful! Smart duplicates removed.`);
         }
 
         function downloadInfiniteFile() {
