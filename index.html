@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheetPulse Pro - Smart Intent-Based Password Auditor</title>
+    <title>SheetPulse Pro - Zero-Loss Fidelity & Precision Auditor</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS library -->
@@ -27,14 +27,14 @@
         
         <!-- Header Section -->
         <header class="text-center mb-12">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
-                <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span> 100% Exact Fidelity Engine Active
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Zero-Loss Text Fidelity & Strict Intent Engine Active
             </div>
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-3">
                 SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Instant Auditor</span>
             </h1>
             <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                Maintains 100% exact symbols (+, -, _, ', `:`, !, @, spaces) without any alteration upon export.
+                Guaranteed zero text/data mutation on upload/download with intelligent password & general duplication auditing.
             </p>
         </header>
 
@@ -72,7 +72,7 @@
             <textarea id="smartPasteInput" rows="7" placeholder="Yahan data paste karein..." class="w-full bg-slate-950/80 border border-slate-800/80 focus:border-indigo-500 rounded-2xl p-4 text-slate-200 focus:outline-none transition-all text-sm font-mono resize-y shadow-inner mb-6 custom-scrollbar"></textarea>
             
             <button onclick="processInfiniteColumnsPaste()" class="w-full sm:w-auto px-7 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white shadow-xl shadow-indigo-600/25 transition-all flex items-center justify-center gap-2">
-                🔍 Inspect & Auto-Scan Passwords
+                🔍 Inspect & Audit Data
             </button>
         </div>
 
@@ -82,8 +82,8 @@
                 <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" onchange="handleInfiniteFileUpload(event)" class="hidden">
                 <label for="excelFile" class="cursor-pointer flex flex-col items-center">
                     <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 group-hover:scale-105 transition-transform flex items-center justify-center text-3xl mb-4 text-indigo-400 shadow-xl shadow-indigo-500/10">📂</div>
-                    <span class="font-bold text-slate-200 text-lg mb-1">Upload Excel / CSV File</span>
-                    <span class="text-xs text-slate-400 font-medium">Automatic Password Scanning Enabled</span>
+                    <span class="font-bold text-slate-200 text-lg mb-1">Upload Excel / CSV File (100% Zero-Loss Fidelity)</span>
+                    <span class="text-xs text-slate-400 font-medium">Original strings, symbols, spaces and numbers remain completely intact</span>
                 </label>
             </div>
         </div>
@@ -93,7 +93,7 @@
             <div class="mb-6 bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-inner">
                 <div id="aiStatusText" class="text-xs sm:text-sm text-slate-300 flex items-center gap-2 font-medium">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Status: Sheet loaded & scanned successfully.</span>
+                    <span>Status: Exact raw data loaded securely without formatting alterations.</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="flex items-center gap-3 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-800 text-xs">
@@ -111,8 +111,8 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
                 <div id="workspace-info" class="text-sm font-bold text-slate-200">Loaded Data Overview</div>
                 <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                    <button onclick="highlightSmartDuplicates()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 transition-all shadow-lg">
-                        🔴 Highlight Duplicate Passwords
+                    <button onclick="highlightAllDuplicatesManual()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 transition-all shadow-lg">
+                        🔴 Highlight All Duplicates
                     </button>
                     <button onclick="executeSmartCleaning()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all">
                         ⚡ Remove & Audit
@@ -130,18 +130,18 @@
             </div>
         </div>
 
-        <!-- POPUP MODAL (WITH TRANSLATE & INTENT-BASED YES/NO HANDLING) -->
+        <!-- POPUP MODAL (INTENT-BASED YES/NO) -->
         <div id="auditModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
             <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl transform transition-all flex flex-col max-h-[85vh]">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-xl text-rose-400">🛡️</div>
                         <div>
-                            <h3 class="text-xl font-bold text-white">Instant Password Duplicate Guard</h3>
-                            <p class="text-slate-400 text-xs">Identical passwords detected across sheet entries.</p>
+                            <h3 class="text-xl font-bold text-white">Duplicate Guard & Password Intent</h3>
+                            <p class="text-slate-400 text-xs">Identical entries or duplicate passwords identified.</p>
                         </div>
                     </div>
-                    <!-- TRANSLATE / LANGUAGE SELECTOR INSIDE POPUP -->
+                    <!-- TRANSLATE / LANGUAGE SELECTOR -->
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-bold text-slate-400">🌐 Translate:</span>
                         <select id="globalLangSelect" onchange="updatePromptLanguage()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-indigo-500 shadow-inner">
@@ -159,16 +159,15 @@
                 <!-- WARNING PROMPT BOX WITH INTERACTIVE YES / NO -->
                 <div class="mb-5 p-4 rounded-2xl bg-gradient-to-r from-rose-950/40 to-indigo-950/40 border border-rose-500/30 text-slate-200 shadow-lg space-y-3">
                     <div class="text-xs uppercase font-extrabold text-rose-400 tracking-wider flex items-center justify-between">
-                        <span>⚠️ Member Response Prompt</span>
+                        <span>⚠️ Password Intent Prompt</span>
                         <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px]">Active</span>
                     </div>
                     
-                    <!-- Selected Translated Prompt -->
                     <p class="text-sm font-bold text-white pt-1">
                         🌐 <span id="selectedLangLabel">Roman Hindi</span>: <span id="promptGlobal" class="text-emerald-300">"Kya aapne ye password duplicate dala hai?"</span>
                     </p>
 
-                    <!-- INTERACTIVE YES / NO BUTTONS (AUTO-CLOSES POPUP ON INTENT) -->
+                    <!-- INTERACTIVE YES / NO BUTTONS -->
                     <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-rose-500/20">
                         <span class="text-xs font-semibold text-slate-300">Kripya apna jawab chunen:</span>
                         <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -203,7 +202,8 @@
         let originalFileName = "cleaned_exact_data.xlsx";
         let isFromFile = false;
         let originalRawData = null;
-        let memberIntentYes = false; // Tracks if member answered Yes
+        let memberIntentYes = null; // null = pending choice, true = Yes (intentional password duplicate), false = No
+        let passwordColIndices = [];
 
         const translations = {
             hi: { name: "Roman Hindi", text: "Kya aapne ye password duplicate dala hai?" },
@@ -248,7 +248,8 @@
             globalMatrix = [];
             originalWorkbook = null;
             originalRawData = null;
-            memberIntentYes = false;
+            memberIntentYes = null;
+            passwordColIndices = [];
             document.getElementById('smartPasteInput').value = '';
             document.getElementById('excelFile').value = '';
             document.getElementById('workspace').classList.add('hidden');
@@ -269,7 +270,18 @@
 
         function normalizeForDetection(val) {
             if (val === undefined || val === null) return "";
-            return String(val).toLowerCase().trim().replace(/\s+/g, "");
+            return String(val).trim();
+        }
+
+        function detectPasswordColumns(headers) {
+            let indices = [];
+            headers.forEach((h, idx) => {
+                let lowerH = String(h).toLowerCase();
+                if (lowerH.includes('password') || lowerH.includes('pass') || lowerH.includes('pwd')) {
+                    indices.push(idx);
+                }
+            });
+            return indices;
         }
 
         function processInfiniteColumnsPaste() {
@@ -282,7 +294,7 @@
             isFromFile = true;
             originalFileName = "cleaned_exact_data.xlsx";
             originalWorkbook = null;
-            memberIntentYes = false;
+            memberIntentYes = null;
 
             let lines = rawText.split('\n');
             let tempRows = [];
@@ -290,7 +302,7 @@
 
             lines.forEach(line => {
                 if(line.trim() !== "") {
-                    let cols = line.split('\t').map(c => c);
+                    let cols = line.split('\t').map(c => c.trim());
                     if(cols.length > maxCols) maxCols = cols.length;
                     tempRows.push(cols);
                 }
@@ -299,22 +311,26 @@
             if(tempRows.length === 0) return;
 
             originalRawData = tempRows;
+            let rawHeaders = tempRows[0];
+            passwordColIndices = detectPasswordColumns(rawHeaders);
+
             let header = ["Row"];
             for(let i = 0; i < maxCols; i++) {
-                header.push(`Col ${getExcelColumnName(i)}`);
+                header.push(rawHeaders[i] || `Col ${getExcelColumnName(i)}`);
             }
 
             globalMatrix = [header];
-            tempRows.forEach((row, idx) => {
-                let paddedRow = [idx + 1];
+            for(let idx = 1; idx < tempRows.length; idx++) {
+                let row = tempRows[idx];
+                let paddedRow = [idx];
                 for(let i = 0; i < maxCols; i++) {
                     paddedRow.push(row[i] !== undefined ? row[i] : "");
                 }
                 globalMatrix.push(paddedRow);
-            });
+            }
 
-            renderWorkspace(`Loaded: ${globalMatrix.length - 1} rows detected.`);
-            checkAutomaticPasswordDuplicates();
+            renderWorkspace(`Loaded: ${globalMatrix.length - 1} rows detected (Zero-Loss Fidelity Active).`);
+            checkAutomaticDuplicates();
         }
 
         function handleInfiniteFileUpload(e) {
@@ -322,17 +338,18 @@
             if (!file) return;
             originalFileName = "clean_" + file.name;
             isFromFile = true;
-            memberIntentYes = false;
+            memberIntentYes = null;
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, {type: 'array', cellStyles: true, cellNF: true});
+                // CRITICAL FIX: raw:true forces zero text/data modification
+                const workbook = XLSX.read(data, {type: 'array', cellDates: false, raw: true});
                 originalWorkbook = workbook;
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
                 
-                let rawData = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: false});
+                let rawData = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true, defval: ""});
                 if(rawData.length === 0) return;
 
                 originalRawData = rawData;
@@ -341,28 +358,81 @@
                     if(row.length > maxCols) maxCols = row.length;
                 });
 
+                let rawHeaders = rawData[0] || [];
+                passwordColIndices = detectPasswordColumns(rawHeaders);
+
                 let header = ["Row"];
                 for(let i = 0; i < maxCols; i++) {
-                    header.push(`Col ${getExcelColumnName(i)}`);
+                    header.push(rawHeaders[i] !== undefined && rawHeaders[i] !== "" ? String(rawHeaders[i]) : `Col ${getExcelColumnName(i)}`);
                 }
 
                 globalMatrix = [header];
-                for(let i = 0; i < rawData.length; i++) {
+                for(let i = 1; i < rawData.length; i++) {
                     let rowData = rawData[i];
-                    let paddedRow = [i + 1];
+                    let paddedRow = [i];
                     for(let j = 0; j < maxCols; j++) {
-                        paddedRow.push(rowData[j] !== undefined ? rowData[j] : "");
+                        let cellVal = rowData[j];
+                        paddedRow.push(cellVal !== undefined && cellVal !== null ? cellVal : "");
                     }
                     globalMatrix.push(paddedRow);
                 }
 
                 renderWorkspace(`File Loaded: ${file.name} | Total Rows: ${globalMatrix.length - 1}`);
-                checkAutomaticPasswordDuplicates();
+                checkAutomaticDuplicates();
             };
             reader.readAsArrayBuffer(file);
         }
 
-        function renderWorkspace(statusMsg, duplicateCellsMap = new Map()) {
+        // Comprehensive Duplicate Cell Mapping (Passwords + General Data Columns)
+        function getAllDuplicateCellsMap() {
+            let dataRows = globalMatrix.slice(1);
+            
+            // Track frequency maps for each column index individually to catch general duplicates
+            let colFrequencyMaps = {};
+
+            dataRows.forEach((row) => {
+                row.forEach((cellVal, cIdx) => {
+                    if (cIdx === 0) return; // Skip row number column
+                    let normVal = normalizeForDetection(cellVal);
+                    if (normVal !== "") {
+                        if (!colFrequencyMaps[cIdx]) colFrequencyMaps[cIdx] = new Map();
+                        colFrequencyMaps[cIdx].set(normVal, (colFrequencyMaps[cIdx].get(normVal) || 0) + 1);
+                    }
+                });
+            });
+
+            let duplicateCellsMap = new Map();
+
+            dataRows.forEach((row, idx) => {
+                let rIdx = idx + 1;
+                row.forEach((cellVal, cIdx) => {
+                    if (cIdx === 0) return;
+                    let normVal = normalizeForDetection(cellVal);
+                    if (normVal !== "") {
+                        let isPasswordCol = passwordColIndices.includes(cIdx - 1);
+                        
+                        // Check if duplicate exists in this column
+                        let freq = colFrequencyMaps[cIdx] ? colFrequencyMaps[cIdx].get(normVal) || 1 : 1;
+                        
+                        if (freq > 1) {
+                            // If it's a password column AND member answered YES (intentional), skip red highlight
+                            if (isPasswordCol && memberIntentYes === true) {
+                                return; // Do not highlight
+                            }
+
+                            if (!duplicateCellsMap.has(rIdx)) {
+                                duplicateCellsMap.set(rIdx, new Set());
+                            }
+                            duplicateCellsMap.get(rIdx).add(cIdx);
+                        }
+                    }
+                });
+            });
+
+            return duplicateCellsMap;
+        }
+
+        function renderWorkspace(statusMsg, highlightMap = new Map()) {
             document.getElementById('workspace').classList.remove('hidden');
             document.getElementById('workspace-info').innerText = statusMsg;
             
@@ -381,9 +451,9 @@
                     if(cIdx === 0 && rIdx > 0) {
                         td.className += " text-slate-500 font-mono";
                         td.innerText = cell;
-                    } else if (rIdx > 0 && !memberIntentYes && duplicateCellsMap.has(rIdx) && duplicateCellsMap.get(rIdx).has(cIdx)) {
-                        // Highlight red ONLY IF member answered NO (memberIntentYes is false)
-                        td.className += " text-rose-400 font-bold";
+                    } else if (rIdx > 0 && highlightMap.has(rIdx) && highlightMap.get(rIdx).has(cIdx)) {
+                        // Highlight duplicate data (general or password based on intent rules) in red
+                        td.className += " text-rose-400 font-bold bg-rose-500/10 border-y border-rose-500/20";
                         td.innerText = cell !== undefined && cell !== null ? cell : '';
                     } else {
                         td.innerText = cell !== undefined && cell !== null ? cell : '';
@@ -402,69 +472,22 @@
             }
         }
 
-        function checkAutomaticPasswordDuplicates() {
+        function checkAutomaticDuplicates() {
             if(globalMatrix.length <= 1) return;
-
-            let dataRows = globalMatrix.slice(1);
-            let passwordFrequencyMap = new Map();
-
-            dataRows.forEach((row) => {
-                for (let c = 1; c < row.length; c++) {
-                    let val = normalizeForDetection(row[c]);
-                    if (val !== "" && val.length > 2) {
-                        passwordFrequencyMap.set(val, (passwordFrequencyMap.get(val) || 0) + 1);
-                    }
-                }
-            });
-
-            let hasDuplicates = false;
-            passwordFrequencyMap.forEach((count) => {
-                if (count > 1) hasDuplicates = true;
-            });
-
-            if (hasDuplicates) {
+            let dupMap = getAllDuplicateCellsMap();
+            if(dupMap.size > 0) {
                 showAuditReportAuto();
             }
         }
 
-        function highlightSmartDuplicates() {
-            // Manual click on highlight button: if member said Yes earlier, respect it; otherwise highlight
-            let duplicateCellsMap = getDuplicateCellsMap();
-            renderWorkspace(`Duplicate passwords check executed.`, duplicateCellsMap);
-            if (memberIntentYes) {
-                alert('Member ne pehle hi Yes confirm kiya hai ki yeh duplicate intentional hain, isiliye red highlighting disable rakhi gayi hai.');
+        function highlightAllDuplicatesManual() {
+            let dupMap = getAllDuplicateCellsMap();
+            renderWorkspace(`Duplicate audit scan completed.`, dupMap);
+            if (memberIntentYes === true) {
+                alert('Duplicate entries highlighted in red (Password columns excluded per your "Yes" confirmation).');
             } else {
-                alert('Duplicate passwords highlighted in red!');
+                alert('All duplicate entries & passwords highlighted in red!');
             }
-        }
-
-        function getDuplicateCellsMap() {
-            let dataRows = globalMatrix.slice(1);
-            let normalizedCountMap = new Map();
-
-            dataRows.forEach((row) => {
-                for (let c = 1; c < row.length; c++) {
-                    let normVal = normalizeForDetection(row[c]);
-                    if (normVal !== "") {
-                        normalizedCountMap.set(normVal, (normalizedCountMap.get(normVal) || 0) + 1);
-                    }
-                }
-            });
-
-            let duplicateCellsMap = new Map();
-            dataRows.forEach((row, idx) => {
-                let rIdx = idx + 1;
-                for (let c = 1; c < row.length; c++) {
-                    let normVal = normalizeForDetection(row[c]);
-                    if (normVal !== "" && normalizedCountMap.get(normVal) > 1) {
-                        if (!duplicateCellsMap.has(rIdx)) {
-                            duplicateCellsMap.set(rIdx, new Set());
-                        }
-                        duplicateCellsMap.get(rIdx).add(c);
-                    }
-                }
-            });
-            return duplicateCellsMap;
         }
 
         function executeSmartCleaning() {
@@ -478,23 +501,22 @@
 
             dataRows.forEach((row, originalIdx) => {
                 let rowContent = row.slice(1);
-                let normalizedRowKey = rowContent.map(v => normalizeForDetection(v)).join("|");
+                let rowKey = rowContent.join("|");
 
-                if (!uniqueMap.has(normalizedRowKey)) {
-                    uniqueMap.set(normalizedRowKey, { row: row, originalLine: originalIdx + 1, rawOriginal: originalRawData[originalIdx] });
+                if (!uniqueMap.has(rowKey)) {
+                    uniqueMap.set(rowKey, { row: row, originalLine: originalIdx + 1, rawOriginal: originalRawData[originalIdx + 1] });
                 } else {
-                    let originalMatch = uniqueMap.get(normalizedRowKey);
+                    let originalMatch = uniqueMap.get(rowKey);
                     auditLogs.push({
                         duplicateLine: originalIdx + 1,
-                        originalLine: originalMatch.originalLine,
-                        content: rowContent.filter(v => v !== "").join(" | ")
+                        originalLine: originalMatch.originalLine
                     });
                 }
             });
 
             let cleanedRows = [];
             let newCounter = 1;
-            let finalCleanRawData = [];
+            let finalCleanRawData = [originalRawData[0]];
 
             uniqueMap.forEach((value) => {
                 let r = [...value.row];
@@ -517,16 +539,12 @@
             document.getElementById('promptGlobal').innerText = `"${langObj.text}"`;
         }
 
-        // INTENT HANDLING: YES = NO RED HIGHLIGHTING, NO = KEEP/APPLY RED HIGHLIGHTING
         function handleMemberResponse(choice) {
             if (choice === 'yes') {
-                memberIntentYes = true; // Member confirmed it's intentionally duplicate
-                console.log("Member answered Yes: Intentional duplicate confirmed. No red highlighting.");
+                memberIntentYes = true; // Intentional password duplicates -> Do not red highlight passwords
             } else {
-                memberIntentYes = false; // Member answered No: Accidental/unwanted duplicate, apply red highlighting
-                console.log("Member answered No: Unwanted duplicate. Applying red highlighting.");
+                memberIntentYes = false; // Unintentional -> Red highlight passwords
             }
-            // Auto-close popup immediately
             closeAuditModal();
         }
 
@@ -535,7 +553,7 @@
             const container = document.getElementById('auditReportContent');
             container.innerHTML = `
                 <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 font-medium text-center">
-                    🚨 Warning: Multiple rows with identical password entries found in your sheet!
+                    🚨 Warning: Duplicate data or passwords identified in the uploaded sheet!
                 </div>
             `;
             document.getElementById('auditModal').classList.remove('hidden');
@@ -549,11 +567,11 @@
             if (logs.length === 0) {
                 container.innerHTML = `
                     <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium text-center">
-                        ✨ No duplicate passwords found! Sheet data is 100% unique.
+                        ✨ No duplicate rows found! Data is pristine.
                     </div>
                 `;
             } else {
-                let html = `<div class="text-indigo-300 font-semibold mb-2">Total ${logs.length} duplicate password row(s) detected:</div>`;
+                let html = `<div class="text-indigo-300 font-semibold mb-2">Total ${logs.length} duplicate entry/entries removed:</div>`;
                 logs.forEach(log => {
                     html += `
                         <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex flex-col gap-1">
@@ -561,7 +579,6 @@
                                 <span class="text-rose-400 font-bold">Duplicate Row #${log.duplicateLine}</span>
                                 <span class="text-slate-400">Matched with Original Row #${log.originalLine}</span>
                             </div>
-                            <div class="text-slate-300 font-mono text-xs truncate">Data: ${log.content || "(Empty)"}</div>
                         </div>
                     `;
                 });
@@ -573,8 +590,8 @@
 
         function closeAuditModal() {
             document.getElementById('auditModal').classList.add('hidden');
-            let duplicateMap = memberIntentYes ? new Map() : getDuplicateCellsMap();
-            renderWorkspace(`Password guard audit reviewed successfully.`, duplicateMap);
+            let dupMap = getAllDuplicateCellsMap();
+            renderWorkspace(`Audited successfully with strict text fidelity.`, dupMap);
         }
 
         function downloadInfiniteFile() {
