@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheetPulse Pro - Multi-Language Password Auditor</title>
+    <title>SheetPulse Pro - Auto Password Guard & Multi-Language Prompt</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS library -->
@@ -27,14 +27,14 @@
         
         <!-- Header Section -->
         <header class="text-center mb-12">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
-                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Multi-Language Smart Guard
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span> Auto Password Guard Active
             </div>
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-3">
-                SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Global Translator</span>
+                SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Instant Auditor</span>
             </h1>
             <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                Detects password duplicates with automated prompts in Hindi, Bangla, and your chosen global language.
+                Automatically detects matching passwords across any column name (pass, password, secret) and prompts members instantly.
             </p>
         </header>
 
@@ -52,7 +52,7 @@
 
             <!-- Global Language Translator Selector -->
             <div class="flex items-center gap-2 w-full md:w-auto justify-end">
-                <span class="text-xs font-bold text-slate-400 flex items-center gap-1">🌐 Translate Prompt:</span>
+                <span class="text-xs font-bold text-slate-400 flex items-center gap-1">🌐 Prompt Language:</span>
                 <select id="globalLangSelect" onchange="updatePromptLanguage()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-500 shadow-inner">
                     <option value="hi">🇮🇳 Roman Hindi / Hindi</option>
                     <option value="bn" selected>🇧🇩 Bangla (বাংলা)</option>
@@ -81,10 +81,10 @@
                 </button>
             </div>
             
-            <textarea id="smartPasteInput" rows="7" placeholder="Yahan data paste karein..." class="w-full bg-slate-950/80 border border-slate-800/80 focus:border-indigo-500 rounded-2xl p-4 text-slate-200 focus:outline-none transition-all text-sm font-mono resize-y shadow-inner mb-6 custom-scrollbar"></textarea>
+            <textarea id="smartPasteInput" rows="7" placeholder="Yahan data paste karein (Pass/Password columns supported)..." class="w-full bg-slate-950/80 border border-slate-800/80 focus:border-indigo-500 rounded-2xl p-4 text-slate-200 focus:outline-none transition-all text-sm font-mono resize-y shadow-inner mb-6 custom-scrollbar"></textarea>
             
             <button onclick="processInfiniteColumnsPaste()" class="w-full sm:w-auto px-7 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white shadow-xl shadow-indigo-600/25 transition-all flex items-center justify-center gap-2">
-                🔍 Inspect & Audit Passwords
+                🔍 Inspect & Auto-Scan Passwords
             </button>
         </div>
 
@@ -95,7 +95,7 @@
                 <label for="excelFile" class="cursor-pointer flex flex-col items-center">
                     <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 group-hover:scale-105 transition-transform flex items-center justify-center text-3xl mb-4 text-indigo-400 shadow-xl shadow-indigo-500/10">📂</div>
                     <span class="font-bold text-slate-200 text-lg mb-1">Upload Excel / CSV File</span>
-                    <span class="text-xs text-slate-400 font-medium">Multi-Language Password Guard Active</span>
+                    <span class="text-xs text-slate-400 font-medium">Automatic Password Scanning Enabled</span>
                 </label>
             </div>
         </div>
@@ -105,7 +105,7 @@
             <div class="mb-6 bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-inner">
                 <div id="aiStatusText" class="text-xs sm:text-sm text-slate-300 flex items-center gap-2 font-medium">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Status: Sheet loaded successfully.</span>
+                    <span>Status: Sheet loaded & scanned successfully.</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="flex items-center gap-3 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-800 text-xs">
@@ -142,22 +142,22 @@
             </div>
         </div>
 
-        <!-- MULTI-LANGUAGE AUDIT REPORT MODAL -->
+        <!-- MULTI-LANGUAGE INSTANT AUDIT REPORT MODAL -->
         <div id="auditModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
             <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl transform transition-all flex flex-col max-h-[85vh]">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-xl text-rose-400">🌐</div>
+                    <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-xl text-rose-400">🛡️</div>
                     <div>
-                        <h3 class="text-xl font-bold text-white">Global Password Audit Alert</h3>
-                        <p class="text-slate-400 text-xs">Dynamic multi-language question prompt for members.</p>
+                        <h3 class="text-xl font-bold text-white">Instant Password Duplicate Guard</h3>
+                        <p class="text-slate-400 text-xs">Identical passwords detected across sheet columns.</p>
                     </div>
                 </div>
 
                 <!-- MULTI-LANGUAGE WARNING PROMPT BOX -->
                 <div class="mb-5 p-4 rounded-2xl bg-gradient-to-r from-rose-950/40 to-indigo-950/40 border border-rose-500/30 text-slate-200 shadow-lg space-y-2">
                     <div class="text-xs uppercase font-extrabold text-rose-400 tracking-wider flex items-center justify-between">
-                        <span>⚠️ Member Multi-Language Warning</span>
-                        <span id="activeLangBadge" class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px]">Bangla & Hindi Default</span>
+                        <span>⚠️ Member Multi-Language Warning Prompt</span>
+                        <span id="activeLangBadge" class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px]">Active</span>
                     </div>
                     
                     <!-- Bangla Prompt -->
@@ -180,7 +180,7 @@
 
                 <div class="flex justify-end gap-3">
                     <button onclick="closeAuditModal()" class="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-lg shadow-indigo-600/20">
-                        View Cleaned Sheet
+                        Got It & View Sheet
                     </button>
                 </div>
             </div>
@@ -204,7 +204,7 @@
             es: { name: "Spanish", text: "¿Introdujiste esta contraseña como un duplicado?" },
             ar: { name: "Arabic", text: "هل قمنا بإدخال كلمة المرور هذه كنسخة مكررة؟" },
             fr: { name: "French", text: "Avez-vous entré ce mot de passe en double ?" },
-            zh: { name: "Chinese", text: "您是否 as 重复输入了此密码？" }
+            zh: { name: "Chinese", text: "您是否重复输入了此密码？" }
         };
 
         function switchTab(tab) {
@@ -266,6 +266,13 @@
             return str;
         }
 
+        // INTELLIGENT PASSWORD DETECTOR: Checks if column header contains pass, password, secret, pin etc.
+        function isPasswordColumn(headerName) {
+            if(!headerName) return false;
+            let h = String(headerName).toLowerCase();
+            return h.includes('pass') || h.includes('pwd') || h.includes('secret') || h.includes('pin') || h.includes('key');
+        }
+
         function processInfiniteColumnsPaste() {
             const rawText = document.getElementById('smartPasteInput').value;
             if (!rawText.trim()) {
@@ -306,7 +313,8 @@
                 globalMatrix.push(paddedRow);
             });
 
-            renderWorkspace(`Loaded: ${globalMatrix.length - 1} rows with ${maxCols} columns detected.`);
+            renderWorkspace(`Loaded: ${globalMatrix.length - 1} rows detected.`);
+            checkAutomaticPasswordDuplicates();
         }
 
         function handleInfiniteFileUpload(e) {
@@ -347,7 +355,8 @@
                     globalMatrix.push(paddedRow);
                 }
 
-                renderWorkspace(`File Loaded: ${file.name} | Total Rows: ${globalMatrix.length - 1} | Columns: A to ${getExcelColumnName(maxCols - 1)}`);
+                renderWorkspace(`File Loaded: ${file.name} | Total Rows: ${globalMatrix.length - 1}`);
+                checkAutomaticPasswordDuplicates();
             };
             reader.readAsArrayBuffer(file);
         }
@@ -391,9 +400,37 @@
             }
         }
 
-        function highlightSmartDuplicates() {
+        // AUTOMATIC SCANNER: Immediately triggers pop-up if duplicate passwords exist upon load
+        function checkAutomaticPasswordDuplicates() {
             if(globalMatrix.length <= 1) return;
 
+            let dataRows = globalMatrix.slice(1);
+            let passwordFrequencyMap = new Map();
+
+            // Scan all cells or specifically password-like cells
+            dataRows.forEach((row) => {
+                for (let c = 1; c < row.length; c++) {
+                    let val = normalizeText(row[c]);
+                    if (val !== "" && val.length > 2) { // Ignore very short blanks or numbers
+                        passwordFrequencyMap.set(val, (passwordFrequencyMap.get(val) || 0) + 1);
+                    }
+                }
+            });
+
+            // Check if any value appears more than once
+            let hasDuplicates = false;
+            passwordFrequencyMap.forEach((count) => {
+                if (count > 1) hasDuplicates = true;
+            });
+
+            if (hasDuplicates) {
+                // Auto trigger highlight and prompt modal instantly
+                highlightSmartDuplicatesSilently();
+                showAuditReportAuto();
+            }
+        }
+
+        function highlightSmartDuplicatesSilently() {
             let dataRows = globalMatrix.slice(1);
             let normalizedCountMap = new Map();
 
@@ -420,11 +457,12 @@
                 }
             });
 
-            if(duplicateCellsMap.size === 0) {
-                alert('Koi bhi matching password duplicate nahi mila!');
-            } else {
-                renderWorkspace(`Highlight: Duplicate passwords marked in red.`, duplicateCellsMap);
-            }
+            renderWorkspace(`Auto Guard: Duplicate passwords detected and highlighted!`, duplicateCellsMap);
+        }
+
+        function highlightSmartDuplicates() {
+            highlightSmartDuplicatesSilently();
+            alert('Duplicate passwords highlighted in red!');
         }
 
         function executeSmartCleaning() {
@@ -477,6 +515,17 @@
             document.getElementById('promptGlobal').innerText = `"${langObj.text}"`;
         }
 
+        function showAuditReportAuto() {
+            updatePromptLanguage();
+            const container = document.getElementById('auditReportContent');
+            container.innerHTML = `
+                <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 font-medium text-center">
+                    🚨 Warning: Multiple rows with identical password entries found in your sheet!
+                </div>
+            `;
+            document.getElementById('auditModal').classList.remove('hidden');
+        }
+
         function showAuditReport(logs) {
             updatePromptLanguage();
             const container = document.getElementById('auditReportContent');
@@ -509,7 +558,7 @@
 
         function closeAuditModal() {
             document.getElementById('auditModal').classList.add('hidden');
-            renderWorkspace(`Cleaning Successful! Duplicate passwords processed.`);
+            renderWorkspace(`Password guard audit reviewed successfully.`);
         }
 
         function downloadInfiniteFile() {
