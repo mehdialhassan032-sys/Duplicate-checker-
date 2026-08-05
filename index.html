@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheetPulse Pro - Auto Password Guard & Interactive Yes/No Prompt</title>
+    <title>SheetPulse Pro - 100% Exact Fidelity Password Guard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS library -->
@@ -28,13 +28,13 @@
         <!-- Header Section -->
         <header class="text-center mb-12">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
-                <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span> Auto Password Guard Active
+                <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span> 100% Exact Fidelity Engine Active
             </div>
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-3">
                 SheetPulse <span class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Instant Auditor</span>
             </h1>
             <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                Automatically detects duplicate passwords and prompts members with interactive Yes/No options.
+                Maintains 100% exact symbols (+, -, _, ', :, !, @, spaces) without any alteration upon export.
             </p>
         </header>
 
@@ -164,7 +164,7 @@
                     <p class="text-sm font-bold text-white">
                         🇧🇩 Bangla: <span id="promptBn" class="text-indigo-300">"আপনি কি এই পাসওয়ার্ডটি ডুপ্লিকেট দিয়েছেন?"</span>
                     </p>
-                    <!-- Corrected Natural Roman Hindi Prompt -->
+                    <!-- Roman Hindi Prompt -->
                     <p class="text-sm font-bold text-white">
                         🇮🇳 Roman Hindi: <span id="promptHi" class="text-indigo-300">"Kya aapne ye password duplicate dala hai?"</span>
                     </p>
@@ -207,9 +207,8 @@
         let originalWorkbook = null;
         let originalFileName = "cleaned_multilingual_sheet.xlsx";
         let isFromFile = false;
-        let originalRawData = null;
+        let originalRawData = null; // Stored raw array with 100% exact characters, symbols & spacing
 
-        // Translation Dictionary with Corrected Roman Hindi
         const translations = {
             hi: { name: "Roman Hindi", text: "Kya aapne ye password duplicate dala hai?" },
             bn: { name: "Bangla", text: "আপনি কি এই পাসওয়ার্ডটি ডুপ্লিকেট দিয়েছেন?" },
@@ -271,12 +270,10 @@
             return columnName;
         }
 
-        function normalizeText(val) {
+        // Normalization strictly for password duplicate detection logic (does not alter original data strings)
+        function normalizeForDetection(val) {
             if (val === undefined || val === null) return "";
-            let str = String(val).toLowerCase().trim();
-            str = str.replace(/[:\-_+=|@]/g, ""); 
-            str = str.replace(/\s+/g, "");
-            return str;
+            return String(val).toLowerCase().trim().replace(/\s+/g, "");
         }
 
         function processInfiniteColumnsPaste() {
@@ -287,7 +284,7 @@
             }
 
             isFromFile = true;
-            originalFileName = "cleaned_multilingual_data.xlsx";
+            originalFileName = "cleaned_exact_data.xlsx";
             originalWorkbook = null;
 
             let lines = rawText.split('\n');
@@ -296,7 +293,7 @@
 
             lines.forEach(line => {
                 if(line.trim() !== "") {
-                    let cols = line.split('\t').map(c => c.trim());
+                    let cols = line.split('\t').map(c => c); // Preserves exact spacing and symbols like +, -, _, ', :, !
                     if(cols.length > maxCols) maxCols = cols.length;
                     tempRows.push(cols);
                 }
@@ -337,7 +334,7 @@
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
                 
-                let rawData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                let rawData = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: false});
                 if(rawData.length === 0) return;
 
                 originalRawData = rawData;
@@ -414,7 +411,7 @@
 
             dataRows.forEach((row) => {
                 for (let c = 1; c < row.length; c++) {
-                    let val = normalizeText(row[c]);
+                    let val = normalizeForDetection(row[c]);
                     if (val !== "" && val.length > 2) {
                         passwordFrequencyMap.set(val, (passwordFrequencyMap.get(val) || 0) + 1);
                     }
@@ -438,7 +435,7 @@
 
             dataRows.forEach((row) => {
                 for (let c = 1; c < row.length; c++) {
-                    let normVal = normalizeText(row[c]);
+                    let normVal = normalizeForDetection(row[c]);
                     if (normVal !== "") {
                         normalizedCountMap.set(normVal, (normalizedCountMap.get(normVal) || 0) + 1);
                     }
@@ -449,7 +446,7 @@
             dataRows.forEach((row, idx) => {
                 let rIdx = idx + 1;
                 for (let c = 1; c < row.length; c++) {
-                    let normVal = normalizeText(row[c]);
+                    let normVal = normalizeForDetection(row[c]);
                     if (normVal !== "" && normalizedCountMap.get(normVal) > 1) {
                         if (!duplicateCellsMap.has(rIdx)) {
                             duplicateCellsMap.set(rIdx, new Set());
@@ -476,12 +473,13 @@
             let uniqueMap = new Map();
             let auditLogs = [];
 
+            // 100% Exact Fidelity Check: Compares normalized signature for duplicates but retains exact raw row content
             dataRows.forEach((row, originalIdx) => {
                 let rowContent = row.slice(1);
-                let normalizedRowKey = rowContent.map(v => normalizeText(v)).join("|");
+                let normalizedRowKey = rowContent.map(v => normalizeForDetection(v)).join("|");
 
                 if (!uniqueMap.has(normalizedRowKey)) {
-                    uniqueMap.set(normalizedRowKey, { row: row, originalLine: originalIdx + 1 });
+                    uniqueMap.set(normalizedRowKey, { row: row, originalLine: originalIdx + 1, rawOriginal: originalRawData[originalIdx] });
                 } else {
                     let originalMatch = uniqueMap.get(normalizedRowKey);
                     auditLogs.push({
@@ -500,7 +498,7 @@
                 let r = [...value.row];
                 r[0] = newCounter++;
                 cleanedRows.push(r);
-                finalCleanRawData.push(r.slice(1));
+                finalCleanRawData.push(value.rawOriginal); // Preserves 100% exact raw cells, spacing and symbols
             });
 
             globalMatrix = [header, ...cleanedRows];
@@ -517,7 +515,6 @@
             document.getElementById('promptGlobal').innerText = `"${langObj.text}"`;
         }
 
-        // Handle Member Yes/No click event inside the modal
         function handleMemberResponse(choice) {
             const statusText = document.getElementById('responseStatusText');
             const btnYes = document.getElementById('btnYes');
@@ -536,7 +533,6 @@
 
         function showAuditReportAuto() {
             updatePromptLanguage();
-            // Reset Yes/No UI state
             document.getElementById('responseStatusText').innerText = "Kripya apna jawab chunen:";
             document.getElementById('btnYes').className = "flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold bg-rose-600/30 hover:bg-rose-600 text-rose-200 hover:text-white border border-rose-500/40 transition-all shadow-md";
             document.getElementById('btnNo').className = "flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600/30 hover:bg-emerald-600 text-emerald-200 hover:text-white border border-emerald-500/40 transition-all shadow-md";
@@ -578,7 +574,6 @@
             }
 
             document.getElementById('auditModal').classList.add('hidden');
-            // Show modal even on manual audit with Yes/No interactive prompt
             document.getElementById('auditModal').classList.remove('hidden');
         }
 
